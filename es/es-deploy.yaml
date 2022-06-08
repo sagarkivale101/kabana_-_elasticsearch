@@ -26,29 +26,29 @@ spec:
           name: http
           protocol: TCP
       
-        # livenessProbe:
-        #   httpGet:
-        #     port: http
-        #     path: http://192.168.49.2:32316/_cluster/health
+        livenessProbe:
+          httpGet:
+            port: http
+            path: _cluster/health
             
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        # readinessProbe:
-        #   httpGet:
-        #     port: http
-        #     path: http://192.168.49.2:32316/_cluster/health
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: http
+            path: _cluster/health
             
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
 
         resources: 
           requests:
             
-            memory: "500Mi"
+            memory: "1000Mi"
             cpu: "100m"
           limits:
            
-            memory: "1500Mi"
+            memory: "2000Mi"
             cpu: "200m"
 
             
