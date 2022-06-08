@@ -27,19 +27,28 @@ spec:
           protocol: TCP
       
         livenessProbe:
+          failureThreshold: 3
           httpGet:
-            port: http
             path: _cluster/health
-            
-          initialDelaySeconds: 30
-          periodSeconds: 10
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+
         readinessProbe:
+          failureThreshold: 3
           httpGet:
-            port: http
             path: _cluster/health
-            
-          initialDelaySeconds: 30
-          periodSeconds: 10
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+
+
 
         resources: 
           requests:
