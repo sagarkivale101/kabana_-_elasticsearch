@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,6 +12,9 @@ spec:
       labels:
         component: elasticsearch
     spec:
+      securityContext:
+        fsGroup: 1000  
+        runAsUser: 0 
       containers:
       - name: elasticsearch
         image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
@@ -21,41 +25,51 @@ spec:
         - containerPort: 9200
           name: http
           protocol: TCP
-        resources:
-          limits:
-            cpu: 1000m
+      
+        # livenessProbe:
+        #   httpGet:
+        #     port: http
+        #     path: http://192.168.49.2:32316/_cluster/health
             
-          requests:
-            cpu: 100m
-            
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
         # readinessProbe:
-        #   exec:
-        #     command:
-        #       - bash
-        #       - -c
-        #       - /mnt/elastic-internal/scripts/readiness-probe-script.sh
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 12
+        #   httpGet:
+        #     port: http
+        #     path: http://192.168.49.2:32316/_cluster/health
+            
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+
+        resources: 
+          requests:
+            
+            memory: "500Mi"
+            cpu: "100m"
+          limits:
+           
+            memory: "1500Mi"
+            cpu: "200m"
+
+            
+       
           
         volumeMounts:
         - name: data
           mountPath: /usr/share/elasticsearch/data
+          
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: esdata
----
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: elasticsearch
-  labels:
-    service: elasticsearch
-spec:
-  type: NodePort
-  selector:
-    component: elasticsearch
-  ports:
-  - port: 9200
-    targetPort: 9200
+
+
+# ---
+# es exporter 
+
+# helm install esporter prometheus-community/prometheus-elasticsearch-exporter
+
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-elasticsearch-exporter
+
+# ---
